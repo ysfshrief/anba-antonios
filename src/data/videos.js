@@ -15,7 +15,7 @@ export const videos = [
     title: "من هو الأنبا أنطونيوس؟",
     description:
       "نبذة عن نشأة القديس العظيم أبي الرهبان، وكيف ترك العالم ليتبع صوت الرب في البرية.",
-    driveUrl: "https://drive.google.com/file/d/PLACEHOLDER_ID_1/view",
+    driveUrl: "https://drive.google.com/file/d/1fos8xBOyc9SPKiOjABTx8IUTU5MUmyxa/view?usp=sharing",
     thumbnail: "",
     duration: "٤:٣٢",
     order: 1,
