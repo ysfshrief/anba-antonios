@@ -27,7 +27,11 @@ export default function VideoCard({ video, index, watched, onWatch }) {
       )}
 
       {/* Media area */}
-      <div className="relative aspect-video w-full overflow-hidden bg-desert">
+      <div
+        className={`relative w-full overflow-hidden bg-black ${
+          open ? "" : "aspect-video"
+        }`}
+      >
         {open ? (
           <iframe
             src={previewUrl}
@@ -35,12 +39,13 @@ export default function VideoCard({ video, index, watched, onWatch }) {
             allow="autoplay; encrypted-media"
             allowFullScreen
             loading="lazy"
-            className="h-full w-full border-0"
+            className="block w-full border-0"
+            style={{ height: "min(56vw, 420px)", minHeight: "220px" }}
           />
         ) : (
           <button
             onClick={handleOpen}
-            className="relative h-full w-full"
+            className="relative aspect-video w-full"
             aria-label={`تشغيل: ${video.title}`}
           >
             {video.thumbnail ? (
