@@ -1,33 +1,60 @@
-import { useRef } from "react";
-import Hero from "./components/Hero";
-import VideoSection from "./components/VideoSection";
+import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { ContentProvider } from "./context/ContentContext";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
-import FloatingCrosses from "./components/FloatingCrosses";
-import { useVideos } from "./hooks/useVideos";
-import { useProgress } from "./hooks/useProgress";
+import BottomNav from "./components/BottomNav";
+import { Spinner } from "./components/Spinner";
 
-export default function App() {
-  const videosRef = useRef(null);
-  const { loading, error, videos } = useVideos();
-  const { isWatched, markWatched } = useProgress();
+// تحميل الصفحات عند الحاجة (Lazy) لتقليل الحزمة الأولى
+const Home = lazy(() => import("./pages/Home"));
+const Lesson = lazy(() => import("./pages/Lesson"));
+const Certificate = lazy(() => import("./pages/Certificate"));
+const About = lazy(() => import("./pages/About"));
+const References = lazy(() => import("./pages/References"));
+const Admin = lazy(() => import("./pages/admin/Admin"));
 
-  const scrollToVideos = () => {
-    videosRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+function Shell() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+
+  if (isAdmin) {
+    return (
+      <Suspense fallback={<Spinner />}>
+        <Routes><Route path="/admin" element={<Admin />} /></Routes>
+      </Suspense>
+    );
+  }
 
   return (
-    <div dir="rtl" lang="ar" className="relative min-h-screen">
-      <FloatingCrosses />
-      <Hero onStart={scrollToVideos} />
-      <VideoSection
-        ref={videosRef}
-        loading={loading}
-        error={error}
-        videos={videos}
-        isWatched={isWatched}
-        markWatched={markWatched}
-      />
+    <div dir="rtl" lang="ar" className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1 pb-20 sm:pb-0">
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/lesson/:id" element={<Lesson />} />
+            <Route path="/certificate" element={<Certificate />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/references" element={<References />} />
+          </Routes>
+        </Suspense>
+      </main>
       <Footer />
+      <BottomNav />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <ContentProvider>
+          <Shell />
+        </ContentProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
